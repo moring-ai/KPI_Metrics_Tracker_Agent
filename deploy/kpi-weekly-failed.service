@@ -1,0 +1,22 @@
+# The dead-man's alert. Triggered by OnFailure= in kpi-weekly.service.
+#
+# Without this, a failed or never-fired weekly run is indistinguishable from a
+# quiet week: nobody notices the report simply did not arrive. That is the
+# classic way a working system rots unnoticed.
+#
+# It posts through the Slack MCP server, so it needs no credential of its own.
+
+[Unit]
+Description=Report that the weekly KPI run failed
+
+[Service]
+Type=oneshot
+User=kpi-client
+Group=kpi-client
+WorkingDirectory=/opt/kpi-tracker
+ExecStart=/opt/kpi-tracker/.venv/bin/python -m kpi_tracker.notify_failure
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+StandardOutput=journal
+StandardError=journal

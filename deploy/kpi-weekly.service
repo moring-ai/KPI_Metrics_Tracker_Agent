@@ -1,0 +1,40 @@
+# The weekly KPI run. Runs as kpi-client, which holds NO credentials and
+# cannot reach AWS -- see deploy/block-imds-for-client.sh for why that last
+# part needs an explicit firewall rule.
+
+[Unit]
+Description=KPI tracker weekly report
+After=kpi-linkedin-mcp.service kpi-slack-mcp.service
+Wants=kpi-linkedin-mcp.service kpi-slack-mcp.service
+# If this fails, tell someone. Silence must not look like success.
+OnFailure=kpi-weekly-failed.service
+
+[Service]
+Type=oneshot
+User=kpi-client
+Group=kpi-client
+WorkingDirectory=/opt/kpi-tracker
+
+# Deliberately no credential environment at all. If you find yourself adding
+# BRIGHTDATA_API_TOKEN or SLACK_BOT_TOKEN here, the MCP split has been undone
+# -- `kpi-tracker check` fails if either is set in this process.
+ExecStart=/opt/kpi-tracker/.venv/bin/kpi-tracker run --send
+
+# It waits on a vendor snapshot that has been measured at up to 9m39s; the
+# client's own read timeout is 2100s. This is the backstop above both.
+TimeoutStartSec=2700
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectProc=invisible
+CapabilityBoundingSet=
+# history.jsonl is the only thing it writes.
+ReadWritePaths=/opt/kpi-tracker/data
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

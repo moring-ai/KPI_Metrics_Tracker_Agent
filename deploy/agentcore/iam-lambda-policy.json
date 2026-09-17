@@ -1,0 +1,20 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "InvokeTheKpiAgentOnly",
+      "Effect": "Allow",
+      "Action": "bedrock-agentcore:InvokeAgentRuntime",
+      "Resource": [
+        "arn:aws:bedrock-agentcore:REGION:ACCOUNT_ID:runtime/AGENT_RUNTIME_ID",
+        "arn:aws:bedrock-agentcore:REGION:ACCOUNT_ID:runtime/AGENT_RUNTIME_ID/runtime-endpoint/*"
+      ]
+    },
+    {
+      "Sid": "Logs",
+      "Effect": "Allow",
+      "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+      "Resource": "arn:aws:logs:REGION:ACCOUNT_ID:log-group:/aws/lambda/kpi-weekly-invoke:*"
+    }
+  ]
+}

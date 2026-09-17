@@ -1,0 +1,9 @@
+# Weekly KPI report -- every Thursday at 18:00 IST.
+#
+# 18:00 IST = 08:30 ET, which is the CTO's Thursday morning and one clear day
+# before Friday standup. cron uses the MACHINE's local time, so if this box is
+# not on IST, pick the local time that maps to 08:30 America/New_York.
+#
+# Install with: crontab -e
+# cron fields: minute hour day-of-month month day-of-week (4 = Thursday)
+0 18 * * 4 /Users/CHANGE_ME/Documents/Moring/Agents/KPI_Metrics_Tracker_Agent/schedule/run-weekly.sh

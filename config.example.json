@@ -1,0 +1,26 @@
+{
+  "timezone": "Asia/Kolkata",
+  "//week_start_day": "The job runs Thursday for Friday standup, so the window is the last complete Thu-Wed. Set to 'monday' for calendar weeks.",
+  "week_start_day": "thursday",
+  "members_path": "data/members.json",
+  "history_path": "data/history.jsonl",
+  "//mcp": "The MCP servers hold the credentials; this process holds none. Loopback only.",
+  "mcp": {
+    "linkedin_url": "http://127.0.0.1:8801/mcp",
+    "slack_url": "http://127.0.0.1:8802/mcp"
+  },
+  "linkedin": {
+    "//source": "mcp | manual_csv | fixture -- manual_csv needs no server and no credential",
+    "source": "mcp",
+    "target_posts_per_week": 3,
+    "manual_csv_path": "data/linkedin_posts.csv",
+    "fixture_path": "tests/fixtures/linkedin_posts.json"
+  },
+  "blog": {
+    "base_url": "https://www.moring.ai"
+  },
+  "//slack": "The destination is set on the kpi-slack SERVER (KPI_SLACK_DESTINATION), not here. This label only appears in dry-run output.",
+  "slack": {
+    "destination_label": "#marketing-kpi"
+  }
+}

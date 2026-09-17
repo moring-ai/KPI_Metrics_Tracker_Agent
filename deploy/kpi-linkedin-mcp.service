@@ -1,0 +1,57 @@
+# The LinkedIn MCP server. Holds the Bright Data credential.
+#
+# Runs as its own user (kpi-mcp) so that the weekly job -- which runs as a
+# DIFFERENT user -- cannot read this process's memory, environment or files.
+# That uid split is what makes "the client holds no credentials" structural
+# rather than a convention.
+
+[Unit]
+Description=KPI tracker LinkedIn MCP server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+User=kpi-mcp
+Group=kpi-mcp
+WorkingDirectory=/opt/kpi-tracker
+
+Environment=KPI_SECRET_BACKEND=aws
+Environment=AWS_REGION=us-east-1
+Environment=KPI_LINKEDIN_SECRET_ID=kpi/brightdata-api-token
+ExecStart=/opt/kpi-tracker/.venv/bin/python -m kpi_mcp.linkedin_server --host 127.0.0.1 --port 8801
+
+Restart=always
+RestartSec=5s
+
+# --- hardening -----------------------------------------------------------
+# NoNewPrivileges  : this process can never gain privileges via setuid binaries.
+# ProtectSystem    : /usr, /boot and /etc are read-only to it.
+# ProtectHome      : it cannot see /home, /root or /run/user at all.
+# PrivateTmp       : its own /tmp, so nothing else can read files it writes there.
+# ProtectProc      : it cannot see other users' processes in /proc -- which also
+#                    means it cannot be used to snoop on anything else.
+# CapabilityBoundingSet= (empty) : no Linux capabilities whatsoever.
+# MemoryDenyWriteExecute : blocks a common code-injection technique.
+# SystemCallFilter : only ordinary system calls; no raw sockets, no kernel modules.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectProc=invisible
+ProcSubset=pid
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryDenyWriteExecute=true
+LockPersonality=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

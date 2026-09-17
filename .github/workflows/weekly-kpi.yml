@@ -1,0 +1,26 @@
+# CI: run the test suite on every push.
+#
+# It does NOT run the weekly report. That lives on the EC2 box, where the MCP
+# servers hold the credentials -- see deploy/README.md. A CI job that could
+# send the report would need a Slack token, which is exactly what the MCP
+# split exists to avoid.
+name: tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install exactly the locked versions
+        run: uv sync --frozen
+      - name: Run the suite
+        # 367 tests, no network, no AWS, no credentials.
+        run: uv run pytest -q

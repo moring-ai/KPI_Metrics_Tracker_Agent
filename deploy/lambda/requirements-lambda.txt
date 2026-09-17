@@ -1,0 +1,9 @@
+# What goes in the Lambda zip.
+#
+# NOT boto3/botocore: the Lambda runtime already provides them (~27 MB), and
+# shipping our own only risks a version clash with the platform's.
+#
+# NOT langgraph/langchain: those belong to the AgentCore deployment only.
+mcp~=2.2
+requests~=2.32
+slack-sdk~=3.36
