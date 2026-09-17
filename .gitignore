@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment-specific, and holds the Slack destination. Copy from config.example.json.
+config.json
+.env
+
+# Generated at run time.
+data/history.jsonl
+data/linkedin_posts.csv
+logs/
+.dev-logs/
+
+# macOS
+.DS_Store
+
+# Lambda build artefacts -- rebuilt by deploy/lambda/build.sh
+build/
+dist/

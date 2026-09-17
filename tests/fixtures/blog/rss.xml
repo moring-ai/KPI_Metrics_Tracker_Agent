@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+<title>moring — blog</title>
+<description>Technical guidance on building and governing AI agents.</description>
+<link>https://blog.test/</link>
+<language>en</language>
+<item>
+  <title>Enterprise AI Architecture</title>
+  <link>https://blog.test/blogs/enterprise-architecture/</link>
+  <guid isPermaLink="true">https://blog.test/blogs/enterprise-architecture/</guid>
+  <description>Where an AI control plane fits.</description>
+  <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+  <category>Platform</category>
+  <author>Ashvath Narayan</author>
+</item>
+<item>
+  <title>AI agent orchestration</title>
+  <link>https://blog.test/blogs/orchestration/</link>
+  <guid isPermaLink="true">https://blog.test/blogs/orchestration/</guid>
+  <description>How to govern it from one place.</description>
+  <pubDate>Fri, 28 Aug 2026 00:00:00 GMT</pubDate>
+  <category>Platform</category>
+  <author>Ellakkiaa</author>
+</item>
+<item>
+  <title>An older post</title>
+  <link>https://blog.test/blogs/old-post/</link>
+  <guid isPermaLink="true">https://blog.test/blogs/old-post/</guid>
+  <description>From well before the window.</description>
+  <pubDate>Tue, 14 Jul 2026 00:00:00 GMT</pubDate>
+  <category>Company</category>
+  <author>Balaji Nagaraj</author>
+</item>
+</channel></rss>

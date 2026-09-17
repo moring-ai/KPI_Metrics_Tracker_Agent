@@ -1,0 +1,34 @@
+# Thursday 11:00 Asia/Kolkata.
+#
+# Written in UTC because systemd's OnCalendar timezone support varies by
+# version and UTC cannot be misread:
+#
+#     05:30 UTC = 11:00 Asia/Kolkata = 01:30 America/New_York
+#
+# Note the last column: the CTO is on US Eastern, so an 11:00 IST run reaches
+# him at 01:30 his time. He will see it when he wakes on Thursday, which is
+# still ahead of Friday standup -- but if you would rather it arrive during his
+# morning, 18:00 IST (12:30 UTC) puts it at 08:30 ET. Change one line here.
+#
+# IST does not observe daylight saving, so this mapping is stable year-round.
+# US Eastern does, so in EST months he receives it at 00:30 instead.
+#
+# The fire time only affects WHEN the message is sent. The seven days it
+# measures come from config.timezone, so the numbers are identical whenever it
+# runs, and re-running mid-week is safe.
+
+[Unit]
+Description=Run the KPI tracker every Thursday
+
+[Timer]
+OnCalendar=Thu *-*-* 05:30:00 UTC
+# If the box was off on Thursday, run at the next boot. Safe to repeat: the
+# client skips a week already sent without fetching anything (0.1s), and the
+# Slack server refuses a duplicate week regardless.
+Persistent=true
+# Avoid hitting the vendor at the same second every week.
+RandomizedDelaySec=300
+Unit=kpi-weekly.service
+
+[Install]
+WantedBy=timers.target

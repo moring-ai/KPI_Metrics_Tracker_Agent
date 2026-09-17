@@ -1,0 +1,15 @@
+{
+  "//": "Attach to the instance role prudential-demo-ec2-role. Scoped to exactly two secret ARNs: this host runs other workloads, so the role must not gain broad Secrets Manager access. The trailing -* is required -- Secrets Manager appends a random suffix to secret ARNs.",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "KpiTrackerReadsOnlyItsTwoSecrets",
+      "Effect": "Allow",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:603011031216:secret:kpi/brightdata-api-token-*",
+        "arn:aws:secretsmanager:us-east-1:603011031216:secret:kpi/slack-bot-token-*"
+      ]
+    }
+  ]
+}

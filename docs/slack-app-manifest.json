@@ -1,0 +1,27 @@
+{
+  "display_information": {
+    "name": "KPI Tracker Agent",
+    "description": "Posts the weekly LinkedIn + blog KPI table",
+    "background_color": "#1f2d3d",
+    "long_description": "Every Thursday, counts how many LinkedIn posts and moring.ai blog posts each team member published in the preceding seven days, and sends the table as a direct message. Read-only against LinkedIn and the website; the only thing it does in Slack is post that one message."
+  },
+  "features": {
+    "bot_user": {
+      "display_name": "KPI Tracker",
+      "always_online": false
+    }
+  },
+  "oauth_config": {
+    "scopes": {
+      "bot": [
+        "chat:write"
+      ]
+    }
+  },
+  "settings": {
+    "org_deploy_enabled": false,
+    "socket_mode_enabled": false,
+    "is_hosted": false,
+    "token_rotation_enabled": false
+  }
+}

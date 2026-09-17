@@ -1,0 +1,14 @@
+.venv/
+.git/
+build/
+dist/
+tests/
+docs/
+src/
+schedule/
+.dev-logs/
+**/__pycache__/
+*.pyc
+.env
+config.json
+data/history.jsonl

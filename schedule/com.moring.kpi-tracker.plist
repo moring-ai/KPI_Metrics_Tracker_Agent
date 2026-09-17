@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Runs the KPI report every Thursday at 18:00 IST.
+
+  Why 18:00 and not the morning: the CTO's Slack timezone is America/New_York.
+  18:00 IST Thursday arrives at 08:30 ET Thursday -- his Thursday morning, a
+  clean day before Friday standup. Firing at 09:00 IST would deliver it at
+  23:30 ET on WEDNESDAY, i.e. before his Wednesday is over, which reads oddly
+  for a report labelled "... to Wed".
+
+  If the machine running this is not on IST, change Hour to whatever local
+  time maps to 08:30 ET. The measured window is unaffected either way -- it is
+  anchored to config.timezone, not to the machine clock or the run time.
+
+  Install:
+    cp schedule/com.moring.kpi-tracker.plist ~/Library/LaunchAgents/
+    # edit the two paths below to match this checkout, then:
+    launchctl load ~/Library/LaunchAgents/com.moring.kpi-tracker.plist
+
+  Run it right now without waiting for Thursday:
+    launchctl kickstart -k gui/$(id -u)/com.moring.kpi-tracker
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.moring.kpi-tracker.plist
+
+  Note: launchd only fires while the machine is awake and logged in. If the
+  laptop is shut on Thursday the run is missed -- RunAtLoad below catches up
+  on the next login, and the window is anchored to the calendar rather than to
+  the run time, so a late run still reports the right seven days. If missing a
+  week is unacceptable, use the GitHub Actions workflow instead.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.moring.kpi-tracker</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/CHANGE_ME/Documents/Moring/Agents/KPI_Metrics_Tracker_Agent/schedule/run-weekly.sh</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/CHANGE_ME/Documents/Moring/Agents/KPI_Metrics_Tracker_Agent</string>
+
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Weekday</key><integer>4</integer>  <!-- 0=Sun, 4=Thursday -->
+    <key>Hour</key><integer>18</integer>   <!-- 18:00 IST = 08:30 ET -->
+    <key>Minute</key><integer>0</integer>
+  </dict>
+
+  <!-- Catch up if the machine was asleep at the scheduled time. Safe to
+       repeat: the run skips a week that has already been sent. -->
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>StandardOutPath</key>
+  <string>/tmp/kpi-tracker.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/kpi-tracker.err.log</string>
+</dict>
+</plist>

@@ -1,0 +1,22 @@
+{
+  "timezone": "Asia/Kolkata",
+  "week_start_day": "thursday",
+  "members_path": "data/members.json",
+
+  "//history_path": "MUST be overridden by KPI_HISTORY_PATH with an s3://bucket/key URI. /var/task is read-only and the filesystem does not survive an invocation, so a local path means the collapse guardrail never gets a baseline and a retry posts the report twice. lambda_handler refuses to run without it.",
+  "history_path": "data/history.jsonl",
+
+  "//mcp": "Unused on Lambda. A function is one process, so the LinkedIn and Slack servers run IN-PROCESS (see lambda_handler.py) and nothing listens on these ports. The URLs are here only because config validation requires one when linkedin.source is 'mcp'.",
+  "mcp": {
+    "linkedin_url": "in-process",
+    "slack_url": "in-process"
+  },
+
+  "linkedin": {
+    "source": "mcp",
+    "target_posts_per_week": 3
+  },
+  "blog": { "base_url": "https://www.moring.ai" },
+  "//slack": "The destination is KPI_SLACK_DESTINATION in the function's environment, not here.",
+  "slack": { "destination_label": "#marketing-kpi" }
+}

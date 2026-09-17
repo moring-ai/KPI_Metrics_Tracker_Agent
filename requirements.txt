@@ -1,0 +1,29 @@
+# EXACTLY what the AICP-injected Dockerfile installs for framework=langgraph.
+# pyproject.toml holds compatible ranges; this file pins for reproducible builds.
+# Keep the two in sync.
+
+# --- the AICP LangGraph template's own set (do not drop any of these) -------
+# langchain-openai is required even though this agent never calls a model:
+# src/aicp/model.py imports it at module load, and src/aicp/__init__.py imports
+# model.py. Removing it breaks the platform adapter, not just the model path.
+langgraph~=1.0
+langchain~=1.3
+langchain-openai~=1.1
+langchain-mcp-adapters~=0.3.0
+bedrock-agentcore~=1.18
+httpx~=0.28
+PyYAML~=6.0
+aws-opentelemetry-distro>=0.10
+
+# --- what the KPI tracker itself needs --------------------------------------
+# beautifulsoup4 is gone: the blog source reads the site's RSS feed with the
+# stdlib XML parser, so there is no HTML left to parse anywhere.
+# mcp: the LinkedIn and Slack servers run IN-PROCESS here (no transport), so the
+# SDK is still needed even though nothing is served over HTTP.
+mcp~=2.2
+requests~=2.32
+slack-sdk~=3.36
+# boto3 is only used if KPI_SECRET_BACKEND=aws. On AICP the secret box injects
+# the tokens as env vars (backend=env), but shipping boto3 keeps that switch
+# available without a rebuild. It is imported lazily.
+boto3~=1.40

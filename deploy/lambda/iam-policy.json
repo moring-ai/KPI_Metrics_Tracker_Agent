@@ -1,0 +1,35 @@
+{
+  "//": "Execution role policy for the kpi-weekly Lambda. Replace ACCOUNT_ID and BUCKET.",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadTheTwoKpiSecrets",
+      "Effect": "Allow",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:ACCOUNT_ID:secret:kpi/brightdata-api-token-*",
+        "arn:aws:secretsmanager:us-east-1:ACCOUNT_ID:secret:kpi/slack-bot-token-*"
+      ]
+    },
+    {
+      "Sid": "TheStateThatOutlivesAnInvocation",
+      "//": "history.jsonl feeds the collapse guardrail's baseline; slack-sent.json is what stops a retry posting the report twice.",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject"],
+      "Resource": "arn:aws:s3:::BUCKET/kpi-tracker/*"
+    },
+    {
+      "Sid": "SoAMissingKeyIs404AndNot403",
+      "//": "Without s3:ListBucket, S3 answers GetObject on a key that does not exist with 403 AccessDenied instead of 404 NoSuchKey. The reader deliberately refuses to treat AccessDenied as 'missing' -- swallowing a permissions failure would look exactly like a fresh install -- so without this the FIRST run of a new deployment always fails, and PutObject is never reached to create the object that would end it. Intentionally NOT scoped with an s3:prefix condition: GetObject carries no prefix in its request context, so a conditioned grant still yields 403.",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::BUCKET"
+    },
+    {
+      "Sid": "Logs",
+      "Effect": "Allow",
+      "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+      "Resource": "arn:aws:logs:us-east-1:ACCOUNT_ID:log-group:/aws/lambda/kpi-weekly:*"
+    }
+  ]
+}
